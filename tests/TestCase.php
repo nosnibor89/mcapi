@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:ignore
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
     /**
