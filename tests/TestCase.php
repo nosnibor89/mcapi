@@ -1,7 +1,8 @@
 <?php
 
-// phpcs:ignore
-abstract class TestCase extends Laravel\Lumen\Testing\TestCase
+namespace Test;
+
+abstract class TestCase extends \Laravel\Lumen\Testing\TestCase
 {
     /**
      * Creates the application.

@@ -3,11 +3,35 @@
 namespace App\Services;
 
 use App\VehicleResponse;
+use GuzzleHttp\Client;
 
 class VehicleService
 {
-    public function fetch($options = null): VehicleReponse
+
+    private $httpClient;
+
+    public function __construct(Client $client)
     {
-        //TODO:
+        $this->httpClient = $client;
+    }
+
+
+    public function fetch(int $modelYear = null, string $manufacturer = null, string $model = null): VehicleResponse
+    {
+        $url = $this->prepareUrl($modelYear, $manufacturer, $model);
+
+        $result = $this->httpClient->get($url)->getBody();
+        $result = json_decode($result);
+
+        return new VehicleResponse($result->Count, $result->Results);
+    }
+
+    private function prepareUrl(int $modelYear, string $manufacturer, string $model): string
+    {
+        $url = env('API_URL');
+        $path = sprintf('modelyear/%d/make/%s/model/%s', $modelYear, $manufacturer, $model);
+        $url = "$url/$path";
+
+        return $url;
     }
 }

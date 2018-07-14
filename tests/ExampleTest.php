@@ -1,9 +1,7 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+namespace Test;
 
-// phpcs:ignore
 class ExampleTest extends TestCase
 {
     /**

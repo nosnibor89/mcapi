@@ -23,6 +23,6 @@ class VehicleController extends Controller
     public function fetch(Request $request)
     {
         // print_r($request);
-        print_r($this->vehicleService);
+        // print_r($this->vehicleService);
     }
 }

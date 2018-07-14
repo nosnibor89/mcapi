@@ -2,7 +2,7 @@
 
 namespace Test\Feature;
 
-use TestCase;
+use Test\TestCase;
 
 class VehicleServiceTest extends TestCase
 {
@@ -38,4 +38,17 @@ class VehicleServiceTest extends TestCase
         $response = $this->call('GET', $wrongRoute);
         $this->assertEquals(404, $response->status(), "There should not be a route/endpoints for $wrongRoute");
     }
+
+    //  /**
+    //  * Test not valid routes gets a 404
+    //  *
+    //  * @return void
+    //  */
+    // public function testVehicleEndpointJson()
+    // {
+    //     $wrongRoute = '/vehicles/undefined/Ford/Fusion/Someotherparam';
+
+    //     $response = $this->call('GET', $wrongRoute);
+    //     $this->assertEquals(404, $response->status(), "There should not be a route/endpoints for $wrongRoute");
+    // }
 }
