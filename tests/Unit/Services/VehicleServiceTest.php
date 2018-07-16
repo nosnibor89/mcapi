@@ -5,7 +5,7 @@ namespace Test\Unit\Services;
 use Test\TestCase;
 
 use App\Services\VehicleService;
-use Mock\HttpClientMock;
+use Test\Mock\HttpClientMock;
 
 class VehicleServiceTest extends TestCase
 {

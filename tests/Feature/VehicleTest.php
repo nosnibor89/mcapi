@@ -3,6 +3,9 @@
 namespace Test\Feature;
 
 use Test\TestCase;
+use Test\Mock\HttpClientMock;
+use Mockery;
+use App\Services\VehicleService;
 
 class VehicleServiceTest extends TestCase
 {
@@ -39,16 +42,29 @@ class VehicleServiceTest extends TestCase
         $this->assertEquals(404, $response->status(), "There should not be a route/endpoints for $wrongRoute");
     }
 
-    //  /**
-    //  * Test not valid routes gets a 404
-    //  *
-    //  * @return void
-    //  */
-    // public function testVehicleEndpointJson()
-    // {
-    //     $wrongRoute = '/vehicles/undefined/Ford/Fusion/Someotherparam';
+    /**
+     * Test not valid routes gets a 404
+     *
+     * @return void
+     */
+    public function testGetVehiclesWithFilters()
+    {
+        // Simulate service response
+        $client = HttpClientMock::fakeForVehicles();
+        $vehicleService = new VehicleService($client);
+        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3');
+        
+        $service = Mockery::mock(VehicleService::class);
+        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3')->once()->andReturn($expectedResponse);
 
-    //     $response = $this->call('GET', $wrongRoute);
-    //     $this->assertEquals(404, $response->status(), "There should not be a route/endpoints for $wrongRoute");
-    // }
+        // load the mock into the IoC container
+        app()->instance(VehicleService::class, $service);
+        // Simulate service response
+
+        $results = $this->json('GET', '/vehicles/2015/Audi/A3')
+            ->seeJson([
+                'Count' => $expectedResponse->Count,
+                'Results' => $expectedResponse->Results
+            ]);
+    }
 }
