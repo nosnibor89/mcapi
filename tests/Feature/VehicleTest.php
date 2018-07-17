@@ -61,8 +61,8 @@ class VehicleServiceTest extends TestCase
         app()->instance(VehicleService::class, $service);
         // Simulate service response
 
-        $results = $this->json('GET', '/vehicles/2015/Audi/A3')
-            ->seeJson([
+        $this->json('GET', '/vehicles/2015/Audi/A3')
+            ->seeJsonEquals([
                 'Count' => $expectedResponse->Count,
                 'Results' => $expectedResponse->Results
             ]);

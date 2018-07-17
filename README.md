@@ -10,3 +10,10 @@ php -S localhost:8000 -t public
 
 Set env var
 API_URL=https://one.nhtsa.gov/webapi/api/SafetyRatings
+
+Unit Test
+./vendor/bin/phpunit
+
+Code Sniffer
+
+./vendor/bin/phpcs .
