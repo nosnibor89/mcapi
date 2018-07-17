@@ -21,8 +21,14 @@ class VehicleController extends Controller
         $this->vehicleService = $vs;
     }
 
-    public function fetch(string $modelYear, string $manufacturer, string $model)
+    public function fetch(Request $request, string $modelYear = null, string $manufacturer = null, string $model = null)
     {
+        if ($request->isMethod('post')) {
+            $modelYear = $request->input('modelYear');
+            $manufacturer = $request->manufacturer;
+            $model = $request->model;
+        }
+
         try {
             // Validate input
             if ($this->validateInput($modelYear, $manufacturer, $model)) {

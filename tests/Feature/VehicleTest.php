@@ -10,11 +10,11 @@ use App\Services\VehicleService;
 class VehicleServiceTest extends TestCase
 {
     /**
-     * Test endpoints are correcly implemented
+     * Test endpoints are correctly implemented for GET method
      *
      * @return void
      */
-    public function testVehicleEndpoints()
+    public function testVehicleGETEndpoints()
     {
         $routes = [
             '/vehicles/2015/Audi/A3',
@@ -26,6 +26,30 @@ class VehicleServiceTest extends TestCase
         foreach ($routes as $key => $route) {
             $response = $this->call('GET', $route);
             $this->assertEquals(200, $response->status(), "Expected HTTP status 200 for $route");
+        }
+    }
+
+    /**
+     * Test endpoints are correctly implemented for POST method
+     *
+     * @return void
+     */
+    public function testVehiclePOSTEndpoints()
+    {
+        $postData = [
+            ['modelYear' => '2015', 'manufacturer' => 'Audi', 'model' => 'A3'],
+            ['modelYear' => '2015', 'manufacturer' => 'Toyota', 'model' => 'Yaris'],
+            ['modelYear' => '2015', 'manufacturer' => 'Ford', 'model' => 'Crown Victoria'],
+            ['modelYear' => 'undefined', 'manufacturer' => 'Ford', 'model' => 'Fusion'],
+        ];
+
+        foreach ($postData as $key => $data) {
+            $response = $this->call('POST', '/vehicles', $data);
+            $this->assertEquals(
+                200,
+                $response->status(),
+                sprintf("Expected HTTP status 200 for %s", json_encode($data))
+            );
         }
     }
 
