@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\VehicleResponse;
 use GuzzleHttp\Client;
+use \Exception;
 
 class VehicleService
 {
@@ -29,6 +30,11 @@ class VehicleService
     private function prepareUrl(int $modelYear, string $manufacturer, string $model): string
     {
         $url = env('API_URL');
+
+        if (empty($url)) {
+            throw new Exception("No API_URL defined in .env file", 1);
+        }
+
         $path = sprintf('modelyear/%d/make/%s/model/%s', $modelYear, $manufacturer, $model);
         $url = "$url/$path";
 
