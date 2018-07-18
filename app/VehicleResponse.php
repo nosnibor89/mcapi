@@ -44,6 +44,16 @@ class VehicleResponse
      */
     private function formatResult(object $vehicle): VehicleResult
     {
-        return new VehicleResult($vehicle->VehicleId, $vehicle->VehicleDescription);
+        $desc = property_exists($vehicle, 'VehicleDescription') ? $vehicle->VehicleDescription : $vehicle->Description;
+
+        $currentVehicle = new VehicleResult($vehicle->VehicleId, $desc);
+
+        if (property_exists($vehicle, 'CrashRating')) {
+            $currentVehicle->CrashRating = $vehicle->CrashRating;
+        } else {
+            unset($currentVehicle->{'CrashRating'});
+        }
+
+        return $currentVehicle;
     }
 }

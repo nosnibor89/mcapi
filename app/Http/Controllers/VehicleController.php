@@ -38,10 +38,13 @@ class VehicleController extends Controller
             $model = $request->model;
         }
 
+        // print_r("aqui");
+        $withRating = $request->query('withRating', false);
+        // print_r($withRating);
         try {
             // Validate input
             if ($this->validateInput($modelYear, $manufacturer, $model)) {
-                $results = $this->vehicleService->fetch((int)$modelYear, $manufacturer, $model);
+                $results = $this->vehicleService->fetch((int)$modelYear, $manufacturer, $model, $withRating);
             } else {
                 $results = new VehicleResponse(0, []);
             }

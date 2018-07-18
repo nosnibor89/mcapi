@@ -67,25 +67,77 @@ class VehicleServiceTest extends TestCase
     }
 
     /**
-     * Test not valid routes gets a 404
+     * Test GET /vehicles endpoints with filters
      *
      * @return void
      */
-    public function testGetVehiclesWithFilters()
+    public function testGETVehiclesWithFilters()
     {
         // Simulate service response
         $client = HttpClientMock::fakeForVehicles();
         $vehicleService = new VehicleService($client);
-        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3');
+        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3', false);
         
         $service = Mockery::mock(VehicleService::class);
-        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3')->once()->andReturn($expectedResponse);
+        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3', false)->once()->andReturn($expectedResponse);
 
         // load the mock into the IoC container
         app()->instance(VehicleService::class, $service);
         // Simulate service response
 
         $this->json('GET', '/vehicles/2015/Audi/A3')
+            ->seeJsonEquals([
+                'Count' => $expectedResponse->Count,
+                'Results' => $expectedResponse->Results
+            ]);
+    }
+
+    /**
+     * Test POST /vehicles endpoints with filters
+     *
+     * @return void
+     */
+    public function testPOSTVehiclesWithFilters()
+    {
+        // Simulate service response
+        $client = HttpClientMock::fakeForVehicles();
+        $vehicleService = new VehicleService($client);
+        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3', false);
+        
+        $service = Mockery::mock(VehicleService::class);
+        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3', false)->once()->andReturn($expectedResponse);
+
+        // load the mock into the IoC container
+        app()->instance(VehicleService::class, $service);
+        // Simulate service response
+
+        $this->json('POST', '/vehicles', ['modelYear' => '2015', 'manufacturer' => 'Audi', 'model' => 'A3'])
+            ->seeJsonEquals([
+                'Count' => $expectedResponse->Count,
+                'Results' => $expectedResponse->Results
+            ]);
+    }
+
+    /**
+     * Test POST /vehicles endpoints with ratings
+     *
+     * @return void
+     */
+    public function testGETVehiclesWithRatings()
+    {
+        // Simulate service response
+        $client = HttpClientMock::fakeForRatings();
+        $vehicleService = new VehicleService($client);
+        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3', true);
+        
+        $service = Mockery::mock(VehicleService::class);
+        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3', true)->once()->andReturn($expectedResponse);
+
+        // load the mock into the IoC container
+        app()->instance(VehicleService::class, $service);
+        // Simulate service response
+
+        $this->json('GET', '/vehicles/2015/Audi/A3?withRating=true')
             ->seeJsonEquals([
                 'Count' => $expectedResponse->Count,
                 'Results' => $expectedResponse->Results

@@ -7,6 +7,7 @@
 namespace App\Services;
 
 use App\VehicleResponse;
+use App\VehicleResult;
 use GuzzleHttp\Client;
 use \Exception;
 
@@ -29,12 +30,14 @@ class VehicleService
      * @param string $model model of vehicles
      * @return VehicleResponse
      */
-    public function fetch(int $modelYear = null, string $manufacturer = null, string $model = null): VehicleResponse
+    public function fetch(int $modelYear = null, string $manufacturer = null, string $model = null, bool $withRating = false): VehicleResponse
     {
         $url = $this->prepareUrl($modelYear, $manufacturer, $model);
+        $result = $this->fetchApi($url);
 
-        $result = $this->httpClient->get($url)->getBody();
-        $result = json_decode($result);
+        if ($withRating) {
+            $result->Results = $this->getRatings($result->Results);
+        }
 
         return new VehicleResponse($result->Count, $result->Results);
     }
@@ -59,5 +62,35 @@ class VehicleService
         $url = "$url/$path?format=json";
 
         return $url;
+    }
+
+      // TODO: room for improvement with https://amphp.org/
+    private function getRatings(array $results): array
+    {
+        return array_map([$this, 'fetchRating'], $results);
+    }
+
+    private function fetchRating(object $vehicle): VehicleResult
+    {
+        $crashRating = 0;
+        $url = env('API_URL');
+        $url = "$url/VehicleId/$vehicle->VehicleId";
+
+        $result = $this->fetchApi($url);
+
+        if (isset($result) && isset($result->Results)) {
+            $crashRating = $result->Results[0]->OverallRating;
+        }
+
+        $currentVehicle = new VehicleResult($vehicle->VehicleId, $vehicle->VehicleDescription);
+        $currentVehicle->CrashRating = $crashRating;
+
+        return $currentVehicle;
+    }
+
+    private function fetchApi(string $url): object
+    {
+        $result = $this->httpClient->get($url)->getBody();
+        return json_decode($result);
     }
 }

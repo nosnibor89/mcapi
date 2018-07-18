@@ -9,6 +9,7 @@ class VehicleResult
 {
     public $VehicleId;
     public $Description;
+    public $CrashRating;
 
     public function __construct(int $id, string $desc)
     {
