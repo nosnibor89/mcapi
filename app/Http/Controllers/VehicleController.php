@@ -21,6 +21,15 @@ class VehicleController extends Controller
         $this->vehicleService = $vs;
     }
 
+    /**
+     * Fetch vehicles data
+     *
+     * @param Request $request Lumen Request object
+     * @param string $modelYear Year of the vehicles to find
+     * @param string $manufacturer  manufacture or make of vehicles to find
+     * @param string $model model of vehicles
+     * @return void
+     */
     public function fetch(Request $request, string $modelYear = null, string $manufacturer = null, string $model = null)
     {
         if ($request->isMethod('post')) {
@@ -43,7 +52,15 @@ class VehicleController extends Controller
         return response()->json($results);
     }
 
-    // Maybe should go into a validator...
+    // TODO: Maybe should go into a validator...
+    /**
+     * Validates input for /vehicles endpoint
+     *
+     * @param string $modelYear Year of the vehicles to find
+     * @param string $manufacturer  manufacture or make of vehicles to find
+     * @param string $model model of vehicles
+     * @return void
+     */
     private function validateInput(string $modelYear, string $manufacturer, string $model)
     {
         if ((empty($modelYear) || !is_numeric($modelYear))) {

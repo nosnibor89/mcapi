@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * VehicleResponse model
+ */
+
 namespace App;
 
 use App\VehicleResult;
@@ -15,6 +19,12 @@ class VehicleResponse
         $this->Results = $this->format($results);
     }
 
+    /**
+     * Formats the "Results" array
+     *
+     * @param array $results    Vehicles results
+     * @return array
+     */
     private function format(array $results): array
     {
         $formatted = array_map([$this, 'formatResult'], $results);
@@ -26,7 +36,13 @@ class VehicleResponse
         return $formatted;
     }
 
-    private function formatResult($vehicle): VehicleResult
+    /**
+     * Formats each vehicle data
+     *
+     * @param object $vehicle Vehicles object comming from API
+     * @return VehicleResult
+     */
+    private function formatResult(object $vehicle): VehicleResult
     {
         return new VehicleResult($vehicle->VehicleId, $vehicle->VehicleDescription);
     }

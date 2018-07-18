@@ -16,5 +16,5 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->get('/vehicles[/{modelYear}[/{manufacturer}[/{model}]]]', 'VehicleController@fetch');
+$router->get('/vehicles/{modelYear}/{manufacturer}/{model}', 'VehicleController@fetch');
 $router->post('/vehicles', 'VehicleController@fetch');

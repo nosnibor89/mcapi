@@ -1,4 +1,7 @@
 <?php
+/**
+ * VehicleResult model
+ */
 
 namespace App;
 
