@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\VehicleService;
-use App\VehicleResponse;
+use App\ApiResponse;
 
 class VehicleController extends Controller
 {
@@ -46,10 +46,10 @@ class VehicleController extends Controller
             if ($this->validateInput($modelYear, $manufacturer, $model)) {
                 $results = $this->vehicleService->fetch((int)$modelYear, $manufacturer, $model, $withRating);
             } else {
-                $results = new VehicleResponse(0, []);
+                $results = new ApiResponse(0, []);
             }
         } catch (Exception $e) {
-            $results = new VehicleResponse(0, []);
+            $results = new ApiResponse(0, []);
         }
 
         return response()->json($results);

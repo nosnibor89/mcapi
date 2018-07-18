@@ -6,8 +6,8 @@
 
 namespace App\Services;
 
-use App\VehicleResponse;
-use App\VehicleResult;
+use App\ApiResponse;
+use App\Vehicle;
 use GuzzleHttp\Client;
 use \Exception;
 
@@ -28,9 +28,9 @@ class VehicleService
      * @param string $modelYear Year of the vehicles to find
      * @param string $manufacturer  manufacture or make of vehicles to find
      * @param string $model model of vehicles
-     * @return VehicleResponse
+     * @return ApiResponse
      */
-    public function fetch(int $modelYear = null, string $manufacturer = null, string $model = null, bool $withRating = false): VehicleResponse
+    public function fetch(int $modelYear = null, string $manufacturer = null, string $model = null, bool $withRating = false): ApiResponse
     {
         $url = $this->prepareUrl($modelYear, $manufacturer, $model);
         $result = $this->fetchApi($url);
@@ -39,7 +39,7 @@ class VehicleService
             $result->Results = $this->getRatings($result->Results);
         }
 
-        return new VehicleResponse($result->Count, $result->Results);
+        return new ApiResponse($result->Count, $result->Results);
     }
 
     /**
@@ -70,7 +70,7 @@ class VehicleService
         return array_map([$this, 'fetchRating'], $results);
     }
 
-    private function fetchRating(object $vehicle): VehicleResult
+    private function fetchRating(object $vehicle): Vehicle
     {
         $crashRating = 0;
         $url = env('API_URL');
@@ -82,7 +82,7 @@ class VehicleService
             $crashRating = $result->Results[0]->OverallRating;
         }
 
-        $currentVehicle = new VehicleResult($vehicle->VehicleId, $vehicle->VehicleDescription);
+        $currentVehicle = new Vehicle($vehicle->VehicleId, $vehicle->VehicleDescription);
         $currentVehicle->CrashRating = $crashRating;
 
         return $currentVehicle;

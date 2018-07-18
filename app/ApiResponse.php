@@ -1,14 +1,14 @@
 <?php
 
 /**
- * VehicleResponse model
+ * ApiResponse model
  */
 
 namespace App;
 
-use App\VehicleResult;
+use App\Vehicle;
 
-class VehicleResponse
+class ApiResponse
 {
     public $Count = 0;
     public $Results = [];
@@ -27,7 +27,7 @@ class VehicleResponse
      */
     private function format(array $results): array
     {
-        $formatted = array_map([$this, 'formatResult'], $results);
+        $formatted = array_map([$this, 'formatVehicle'], $results);
 
         usort($formatted, function ($a, $b) {
             return $a->VehicleId - $b->VehicleId;
@@ -40,13 +40,13 @@ class VehicleResponse
      * Formats each vehicle data
      *
      * @param object $vehicle Vehicles object comming from API
-     * @return VehicleResult
+     * @return Vehicle
      */
-    private function formatResult(object $vehicle): VehicleResult
+    private function formatVehicle(object $vehicle): Vehicle
     {
         $desc = property_exists($vehicle, 'VehicleDescription') ? $vehicle->VehicleDescription : $vehicle->Description;
 
-        $currentVehicle = new VehicleResult($vehicle->VehicleId, $desc);
+        $currentVehicle = new Vehicle($vehicle->VehicleId, $desc);
 
         if (property_exists($vehicle, 'CrashRating')) {
             $currentVehicle->CrashRating = $vehicle->CrashRating;

@@ -1,11 +1,11 @@
 <?php
 /**
- * VehicleResult model
+ * Vehicle model
  */
 
 namespace App;
 
-class VehicleResult
+class Vehicle
 {
     public $VehicleId;
     public $Description;
