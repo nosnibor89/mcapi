@@ -34,13 +34,12 @@ class VehicleController extends Controller
     {
         if ($request->isMethod('post')) {
             $modelYear = $request->input('modelYear');
-            $manufacturer = $request->manufacturer;
-            $model = $request->model;
+            $manufacturer = $request->input('manufacturer');
+            $model = $request->input('model');
         }
 
-        // print_r("aqui");
-        $withRating = $request->query('withRating', false);
-        // print_r($withRating);
+        $withRating = $request->query('withRating') === 'true' ? true: false;
+
         try {
             // Validate input
             if ($this->validateInput($modelYear, $manufacturer, $model)) {
@@ -64,7 +63,7 @@ class VehicleController extends Controller
      * @param string $model model of vehicles
      * @return void
      */
-    private function validateInput(string $modelYear, string $manufacturer, string $model)
+    private function validateInput(string $modelYear = null, string $manufacturer = null, string $model = null)
     {
         if ((empty($modelYear) || !is_numeric($modelYear))) {
             return false;

@@ -35,7 +35,7 @@ class VehicleService
         $url = $this->prepareUrl($modelYear, $manufacturer, $model);
         $result = $this->fetchApi($url);
 
-        if ($withRating) {
+        if ($withRating === true) {
             $result->Results = $this->getRatings($result->Results);
         }
 
@@ -64,12 +64,24 @@ class VehicleService
         return $url;
     }
 
-      // TODO: room for improvement with https://amphp.org/
-    private function getRatings(array $results): array
+    // TODO: room for improvement with https://amphp.org/
+    /**
+     * Get ratings for each vehicle
+     *
+     * @param array $vehicles   List/array of vehicles
+     * @return array
+     */
+    private function getRatings(array $vehicles): array
     {
-        return array_map([$this, 'fetchRating'], $results);
+        return array_map([$this, 'fetchRating'], $vehicles);
     }
 
+    /**
+     * Fetch rating for a given vehicle
+     *
+     * @param object $vehicle   Vehicles object coming from api or Vehicle class
+     * @return Vehicle
+     */
     private function fetchRating(object $vehicle): Vehicle
     {
         $crashRating = 0;
@@ -88,6 +100,12 @@ class VehicleService
         return $currentVehicle;
     }
 
+    /**
+     * Send request to vehicles API
+     *
+     * @param string $url Url to be requested
+     * @return object
+     */
     private function fetchApi(string $url): object
     {
         $result = $this->httpClient->get($url)->getBody();

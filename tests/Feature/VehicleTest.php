@@ -10,7 +10,7 @@ use App\Services\VehicleService;
 class VehicleServiceTest extends TestCase
 {
     /**
-     * Test endpoints are correctly implemented for GET method
+     * Test endpoint is correctly implemented for GET method
      *
      * @return void
      */
@@ -30,7 +30,7 @@ class VehicleServiceTest extends TestCase
     }
 
     /**
-     * Test endpoints are correctly implemented for POST method
+     * Test endpoint is correctly implemented for POST method
      *
      * @return void
      */
@@ -67,7 +67,7 @@ class VehicleServiceTest extends TestCase
     }
 
     /**
-     * Test GET /vehicles endpoints with filters
+     * Test GET /vehicles endpoint with filters
      *
      * @return void
      */
@@ -92,8 +92,8 @@ class VehicleServiceTest extends TestCase
             ]);
     }
 
-    /**
-     * Test POST /vehicles endpoints with filters
+      /**
+     * Test POST /vehicles endpoint with filters
      *
      * @return void
      */
@@ -115,6 +115,47 @@ class VehicleServiceTest extends TestCase
             ->seeJsonEquals([
                 'Count' => $expectedResponse->Count,
                 'Results' => $expectedResponse->Results
+            ]);
+    }
+
+    /**
+     * Test GET /vehicles endpoint works correctly with bad params provided
+     *
+     * @return void
+     */
+    public function testGETVehiclesEndpointWithBadQueryParam()
+    {
+        // Simulate service response
+        $client = HttpClientMock::fakeForVehicles();
+        $vehicleService = new VehicleService($client);
+        $expectedResponse = $vehicleService->fetch(2015, 'Audi', 'A3', false);
+        
+        $service = Mockery::mock(VehicleService::class);
+        $service->shouldReceive('fetch')->with(2015, 'Audi', 'A3', false)->once()->andReturn($expectedResponse);
+
+        // load the mock into the IoC container
+        app()->instance(VehicleService::class, $service);
+        // Simulate service response
+
+        // Should get same response as if there is no withRating param
+        $this->json('GET', '/vehicles/2015/Audi/A3?withRating=mycar')
+            ->seeJsonEquals([
+                'Count' => $expectedResponse->Count,
+                'Results' => $expectedResponse->Results
+            ]);
+    }
+
+     /**
+     * Test POST /vehicles endpoint works correctly with bad params provided
+     *
+     * @return void
+     */
+    public function testPOSTVehiclesWithBadQueryParams()
+    {
+        $this->json('POST', '/vehicles', ['modelYear' => '2015', 'manufacturer' => 'Audi'])
+            ->seeJson([
+                'Count' => 0,
+                'Results' => []
             ]);
     }
 
